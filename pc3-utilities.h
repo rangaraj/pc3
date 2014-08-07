@@ -132,6 +132,7 @@
 //	std::vector<Vector> ReadVertexList(const char *vertexFileName);
 	std::vector<Node_infoT> ReadVertexList(const char *vertexFileName);
 	GraphT ReadGraphEdgeList(const char *edgeFileName, const char *edgeType, const char *graphName, std::vector<Node_infoT> vertexList);
+	GraphT ReadGraphEdgeList(std::string edgeFileName, std::string edgeType, std::string graphName, std::vector<Node_infoT> vertexList);
 	void printTheGraph(GraphT g, const char *graphFileName);
 
 	std::vector<Node_infoT> GetNodePositions();

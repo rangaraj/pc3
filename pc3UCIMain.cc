@@ -278,19 +278,21 @@ MdcMain::SetupMobility()
 
 		GraphT hGraph, tGraph;
 
-		/****** TODO *********************
+		/****** TODO ********************* This somehow does not work!
 		std::string H_MDCs[] = { "H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10" };
 		std::string T_MDCs[] = { "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10" };
 		for (uint32_t i=0; i<m_nH_Mdcs; i++)
 		{
-			hGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "H", H_MDCs[i].c_str(), m_nodeLocations);
-			AddGraph(H_MDCs[i], hGraph);
+			const char *mdcName = H_MDCs[i].c_str();
+			hGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "H", mdcName, m_nodeLocations);
+			AddGraph(mdcName, hGraph);
 		}
 		printTheGraph(hGraph, "HGraph.dot");
 		for (uint32_t i=0; i<m_nT_Mdcs; i++)
 		{
-			hGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "T", T_MDCs[i].c_str(), m_nodeLocations);
-			AddGraph(T_MDCs[i], tGraph);
+			const char *mdcName = T_MDCs[i].c_str();
+			hGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "T", mdcName, m_nodeLocations);
+			AddGraph(mdcName, tGraph);
 		}
 		printTheGraph(tGraph, "TGraph.dot");
 		ComputeAllGraphWayPoints();
@@ -312,65 +314,144 @@ MdcMain::SetupMobility()
 		}
 		*****************************************/
 
-		hGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "H", "H1", m_nodeLocations);
-		AddGraph("H1", hGraph);
-		hGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "H", "H2", m_nodeLocations);
-		AddGraph("H2", hGraph);
-		hGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "H", "H3", m_nodeLocations);
-		AddGraph("H3", hGraph);
-		hGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "H", "H4", m_nodeLocations);
-		AddGraph("H4", hGraph);
-		hGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "H", "H5", m_nodeLocations);
-		AddGraph("H5", hGraph);
-		/*
-		*/
+
+		///******* TODO...
+		// Hate this stupid if condition logic but somehow the previous block fails in ComputeAllGraphWayPoints(); -- giving up!
+		const char* edgeFileName =
+				//"IIST0520EdgesHT.txt";
+				"IIST0711Edges.txt";
+		if (m_nH_Mdcs>0)
+		{
+			hGraph = ReadGraphEdgeList(edgeFileName, "H", "H1", m_nodeLocations);
+			AddGraph("H1", hGraph);
+		}
+		if (m_nH_Mdcs>1)
+		{
+			hGraph = ReadGraphEdgeList(edgeFileName, "H", "H2", m_nodeLocations);
+			AddGraph("H2", hGraph);
+		}
+		if (m_nH_Mdcs>2)
+		{
+			hGraph = ReadGraphEdgeList(edgeFileName, "H", "H3", m_nodeLocations);
+			AddGraph("H3", hGraph);
+		}
+		if (m_nH_Mdcs>3)
+		{
+			hGraph = ReadGraphEdgeList(edgeFileName, "H", "H4", m_nodeLocations);
+			AddGraph("H4", hGraph);
+		}
+		if (m_nH_Mdcs>4)
+		{
+			hGraph = ReadGraphEdgeList(edgeFileName, "H", "H5", m_nodeLocations);
+			AddGraph("H5", hGraph);
+		}
+		if (m_nH_Mdcs>5)
+		{
+			hGraph = ReadGraphEdgeList(edgeFileName, "H", "H6", m_nodeLocations);
+			AddGraph("H6", hGraph);
+		}
+		if (m_nH_Mdcs>6)
+		{
+			hGraph = ReadGraphEdgeList(edgeFileName, "H", "H7", m_nodeLocations);
+			AddGraph("H7", hGraph);
+		}
+		if (m_nH_Mdcs>7)
+		{
+			hGraph = ReadGraphEdgeList(edgeFileName, "H", "H8", m_nodeLocations);
+			AddGraph("H8", hGraph);
+		}
+		if (m_nH_Mdcs>8)
+		{
+			hGraph = ReadGraphEdgeList(edgeFileName, "H", "H9", m_nodeLocations);
+			AddGraph("H9", hGraph);
+		}
+		if (m_nH_Mdcs>9)
+		{
+			hGraph = ReadGraphEdgeList(edgeFileName, "H", "H10", m_nodeLocations);
+			AddGraph("H10", hGraph);
+		}
 		printTheGraph(hGraph, "HGraph.dot");
 		// We let the H nodes stay on the same graph route
 
 
 
-		tGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "T", "T1", m_nodeLocations);
-		AddGraph("T1", tGraph);
-		tGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "T", "T2", m_nodeLocations);
-		AddGraph("T2", tGraph);
-		tGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "T", "T3", m_nodeLocations);
-		AddGraph("T3", tGraph);
-		tGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "T", "T4", m_nodeLocations);
-		AddGraph("T4", tGraph);
-		tGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "T", "T5", m_nodeLocations);
-		AddGraph("T5", tGraph);
-		tGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "T", "T6", m_nodeLocations);
-		AddGraph("T6", tGraph);
-		tGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "T", "T7", m_nodeLocations);
-		AddGraph("T7", tGraph);
-		tGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "T", "T8", m_nodeLocations);
-		AddGraph("T8", tGraph);
-		tGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "T", "T9", m_nodeLocations);
-		AddGraph("T9", tGraph);
-		tGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "T", "T10", m_nodeLocations);
-		AddGraph("T10", tGraph);
-		/*
-		*/
+		if (m_nT_Mdcs>0)
+		{
+			tGraph = ReadGraphEdgeList(edgeFileName, "T", "T1", m_nodeLocations);
+			AddGraph("T1", tGraph);
+		}
+		if (m_nT_Mdcs>1)
+		{
+			tGraph = ReadGraphEdgeList(edgeFileName, "T", "T2", m_nodeLocations);
+			AddGraph("T2", tGraph);
+		}
+		if (m_nT_Mdcs>2)
+		{
+			tGraph = ReadGraphEdgeList(edgeFileName, "T", "T3", m_nodeLocations);
+			AddGraph("T3", tGraph);
+		}
+		if (m_nT_Mdcs>3)
+		{
+			tGraph = ReadGraphEdgeList(edgeFileName, "T", "T4", m_nodeLocations);
+			AddGraph("T4", tGraph);
+		}
+		if (m_nT_Mdcs>4)
+		{
+			tGraph = ReadGraphEdgeList(edgeFileName, "T", "T5", m_nodeLocations);
+			AddGraph("T5", tGraph);
+		}
+		if (m_nT_Mdcs>5)
+		{
+			tGraph = ReadGraphEdgeList(edgeFileName, "T", "T6", m_nodeLocations);
+			AddGraph("T6", tGraph);
+		}
+		if (m_nT_Mdcs>6)
+		{
+			tGraph = ReadGraphEdgeList(edgeFileName, "T", "T7", m_nodeLocations);
+			AddGraph("T7", tGraph);
+		}
+		if (m_nT_Mdcs>7)
+		{
+			tGraph = ReadGraphEdgeList(edgeFileName, "T", "T8", m_nodeLocations);
+			AddGraph("T8", tGraph);
+		}
+		if (m_nT_Mdcs>8)
+		{
+			tGraph = ReadGraphEdgeList(edgeFileName, "T", "T9", m_nodeLocations);
+			AddGraph("T9", tGraph);
+		}
+		if (m_nT_Mdcs>9)
+		{
+			tGraph = ReadGraphEdgeList(edgeFileName, "T", "T10", m_nodeLocations);
+			AddGraph("T10", tGraph);
+		}
 		printTheGraph(tGraph, "TGraph.dot");
 
 
 		// Now call this method in mdc-utilities that will populate all the Waypoint vectors corresponding to the event locations
 		ComputeAllGraphWayPoints();
-		PrintWaypointVector("H1");
-		PrintWaypointVector("H2");
-		PrintWaypointVector("H3");
-		PrintWaypointVector("H4");
-		PrintWaypointVector("H5");
-		PrintWaypointVector("T1");
-		PrintWaypointVector("T2");
-		PrintWaypointVector("T3");
-		PrintWaypointVector("T4");
-		PrintWaypointVector("T5");
-		PrintWaypointVector("T6");
-		PrintWaypointVector("T7");
-		PrintWaypointVector("T8");
-		PrintWaypointVector("T9");
-		PrintWaypointVector("T10");
+
+		if (m_nH_Mdcs>0) PrintWaypointVector("H1");
+		if (m_nH_Mdcs>1) PrintWaypointVector("H2");
+		if (m_nH_Mdcs>2) PrintWaypointVector("H3");
+		if (m_nH_Mdcs>3) PrintWaypointVector("H4");
+		if (m_nH_Mdcs>4) PrintWaypointVector("H5");
+		if (m_nH_Mdcs>5) PrintWaypointVector("H6");
+		if (m_nH_Mdcs>6) PrintWaypointVector("H7");
+		if (m_nH_Mdcs>7) PrintWaypointVector("H8");
+		if (m_nH_Mdcs>8) PrintWaypointVector("H9");
+		if (m_nH_Mdcs>9) PrintWaypointVector("H10");
+		if (m_nT_Mdcs>0) PrintWaypointVector("T1");
+		if (m_nT_Mdcs>1) PrintWaypointVector("T2");
+		if (m_nT_Mdcs>2) PrintWaypointVector("T3");
+		if (m_nT_Mdcs>3) PrintWaypointVector("T4");
+		if (m_nT_Mdcs>4) PrintWaypointVector("T5");
+		if (m_nT_Mdcs>5) PrintWaypointVector("T6");
+		if (m_nT_Mdcs>6) PrintWaypointVector("T7");
+		if (m_nT_Mdcs>7) PrintWaypointVector("T8");
+		if (m_nT_Mdcs>8) PrintWaypointVector("T9");
+		if (m_nT_Mdcs>9) PrintWaypointVector("T10");
+		//*********************/
 
 		//PrintGraphRoute("H1", "H1-WayPoints.dot");
 		//PrintGraphRoute("T1", "T1-WayPoints.dot");

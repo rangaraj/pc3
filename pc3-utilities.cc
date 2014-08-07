@@ -475,6 +475,7 @@ static double m_cumEventResponse = 0;
 	// The edgeType parameter indicates the set of edges that should be considered to populate the graph for the graphName
 	GraphT ReadGraphEdgeList(const char *edgeFileName, const char *edgeType, const char *graphName, std::vector<Node_infoT> vertexList)
 	{
+		std::cout << "Reading Graph Edges for <char*>EdgeFileName|EdgeType|GraphName: " << edgeFileName << "|" << edgeType << "|" << graphName << std::endl;
 		std::vector<EdgeDataT> edgeList;
 		std::string s;
 		unsigned count;
@@ -545,6 +546,142 @@ static double m_cumEventResponse = 0;
 				{
 					// if (strcmp(s3,graphName) ==0)
 					if (strcmp(s3,edgeType) ==0)
+					{
+						eDat.nodeFrom = std::atoi(s1);
+						eDat.nodeTo = std::atoi(s2);
+						eDat.weight = wt;
+						edgeList.push_back(eDat);
+						//std::cout << "Adding edge " << eDat.nodeFrom << "<===>" << eDat.nodeTo << " with weight =" << eDat.weight << ".\n";
+						count++;
+
+						// Store the node <==> graph association
+						AddNodeToMultimap(eDat.nodeFrom, graphName);
+						AddNodeToMultimap(eDat.nodeTo, graphName);
+					}
+					else
+					{
+						//std::cout << "... Skipping entry [" << s << "]." << std::endl;
+					}
+				}
+				else
+				{
+					//std::cout << "... Edge Info Not found in.." << s << std::endl;
+				}
+			}
+		}
+		std::cout << "Recorded..." << count << " edges." << std::endl;
+
+
+
+
+		// At this point, you have an edgeList and a vertexList fully populated.
+		// This is enough to create a graph and return it.
+
+		// Create an empty graph
+		unsigned num_nodes = vertexList.size();
+		GraphT g(num_nodes);
+
+		// Now add the vertices...
+		VertexDescriptor vd;
+		VertexNamePropertyMap vertexNameMap = boost::get(&Vertex_infoT::vertexName, g);
+		VertexIdPropertyMap vertexIdMap = boost::get(&Vertex_infoT::nodeId, g);
+		for (unsigned i=0; i<num_nodes; i++)
+		{
+			// for each vertex add the NodeId and Vertex Name info... hopefully it will be useful later.
+			vd = vertex(i,g);
+			vertexIdMap[vd] = vertexList[i].nodeId;
+			vertexNameMap[vd] = vertexList[i].nodeName;
+		}
+
+		// Then add the edges to that graph
+		unsigned num_edges = edgeList.size();
+		VertexDescriptor u, v;
+		for (unsigned i=0; i<num_edges; i++)
+		{
+			u = edgeList.at(i).nodeFrom;
+			v = edgeList.at(i).nodeTo;
+			add_edge(u, v, edgeList.at(i).weight, g);
+		}
+
+
+		return g;
+
+	}
+
+
+	GraphT ReadGraphEdgeList(std::string edgeFileName, std::string edgeType, std::string graphName, std::vector<Node_infoT> vertexList)
+	{
+		std::cout << "Reading Graph Edges for <std:;string>EdgeFileName|EdgeType|GraphName: " << edgeFileName << "|" << edgeType << "|" << graphName << std::endl;
+		std::vector<EdgeDataT> edgeList;
+		std::string s;
+		unsigned count;
+		EdgeDataT eDat;
+
+		std::ifstream edgeFile(edgeFileName.c_str());
+
+		/* The first few lines will be:
+			NAME MDC SIMULATION - SHANTYTOWN NODELIST INPUT
+			COMMENT Sensor Node Relative Placement provided by IIST
+			DIMENSION 12315
+			DEPOT	T	24
+			DEPOT	H	24
+			EDGE_LIST_SECTION
+			24    22    H    86.9941483975268
+			22    231    H    58.5001204787593
+			11864    11865    T    11.6996078566915
+			11865    11866    T    6.54295068641896
+			11866    11868    T    32.0056339697657
+		 */
+		while (!edgeFile.eof())
+		{
+			getline(edgeFile,s);
+			if (s.length() == 0)
+				continue;
+
+			if (	(s.compare(0, 4, "NAME") == 0) ||
+					(s.compare(0, 7, "COMMENT") == 0) ||
+					(s.compare(0, 17, "EDGE_LIST_SECTION") == 0) ||
+					(s.compare(0, 3, "EOF") == 0) )
+				std::cout << "Reading..." << s << std::endl;
+			else if ((s.compare(0, 5, "DEPOT") == 0))
+			{
+				char s1[10], s2[10];
+
+				if (sscanf(s.c_str(),"DEPOT %s %s", s1, s2) == 2)
+				{
+					//if (strcmp(s1,graphName) == 0)
+					if (strcmp(s1,edgeType.c_str()) == 0)
+					{
+						int nodeId = std::atoi(s2);
+						std::cout << "Depot Location for Graph " << s1 << " set to Node " << nodeId << ".\n";
+
+						// Store the depot location of this graph
+						x_depotLocations.insert(std::pair<std::string, int>(graphName, nodeId));
+					}
+					else
+						std::cout << "... Skipping entry [" << s << "]." << std::endl;
+				}
+				else
+					std::cout << "... UNKNOWN DEPOT CONFIGURATION..." << s << std::endl;
+			}
+			else if ((s.compare(0, 9, "DIMENSION") == 0))
+			{
+				if (sscanf(s.c_str(),"DIMENSION %u", &count) == 1)
+					std::cout << "Expectng..." << count << " edges." << std::endl;
+				else
+					std::cout << "... UNKNOWN DIMENSION..." << s << std::endl;
+
+				count = 0;
+			}
+			else
+			{
+				char s1[10], s2[10], s3[10];
+				double wt;
+
+				if (sscanf(s.c_str(),"%s %s %s %lf", s1, s2, s3, &wt) == 4)
+				{
+					// if (strcmp(s3,graphName) ==0)
+					if (strcmp(s3,edgeType.c_str()) ==0)
 					{
 						eDat.nodeFrom = std::atoi(s1);
 						eDat.nodeTo = std::atoi(s2);
@@ -1144,6 +1281,7 @@ static double m_cumEventResponse = 0;
 
 	void AddGraph(std::string graphName, GraphT g)
 	{
+		std::cout << "Adding Graph Route for : " << graphName << std::endl;
     	x_GraphMap.insert(std::pair<std::string, GraphT>(graphName, g));
 
     	// If you are adding a new graph entry then make sure you add a new entry for the Waypoint vector for the graph
@@ -1531,6 +1669,7 @@ static double m_cumEventResponse = 0;
 			// Navigate through the x_WPCandidateVectorMap and update the best graph(s)
 			ProcessCandidateVectorMaps(newWayPoint);
 
+			std::cout << "\n**** END OF PROCESSING EVENT AT TIME= " << newWayPoint.dEventTime << " LOCATION=" << newWayPoint.vLoc.toString() << " NODE ID=[" <<  GetSensorNodeId(newWayPoint.vLoc) << "]" << std::endl;
 		}
 		// Go back and add the next event location
 
