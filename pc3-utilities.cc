@@ -146,23 +146,6 @@
 //		return m_mdcoutputStream;
 //	}
 
-	void SetMDCVelocity (double vel) {} //TODO:
-	double GetMDCVelocity () { return 11.0;} //TODO:
-	void SetEventExpiry (double dt) {} // TODO:
-	double GetEventExpiry () {return 300.00;} // TODO:
-
-	double GetMDCVelocity (std::string graphName)
-	{
-		if (graphName.compare("H"))
-			return 11.11;
-		if (graphName.compare("T"))
-			return 6.94;
-		else
-			return 1;
-
-	} //TODO: Better accept this as a parameter
-
-
 	void CreateTSPInput(std::vector<Vector> * inputVector, std::stringstream &s)
 	{
 		s << "NAME : MDC SIMULATION - TSP INPUT " << std::endl
