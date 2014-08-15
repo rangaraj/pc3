@@ -164,7 +164,7 @@
 		void SetSensorPositions(std::vector<Vector> senPos);
 		void StoreEventLocation(SensedEvent se);
 		GraphT ReadGraphEdgeList(const char *edgeFileName, const char *edgeType, const char *graphName, std::vector<Node_infoT> vertexList);
-		GraphT ReadGraphEdgeList(std::string edgeFileName, std::string edgeType, std::string graphName, std::vector<Node_infoT> vertexList);
+		//GraphT ReadGraphEdgeList(std::string edgeFileName, std::string edgeType, std::string graphName, std::vector<Node_infoT> vertexList);
 		void printTheGraph(GraphT g, const char *graphFileName);
 		void AddNodeToMultimap(int nodeId, std::string graphName);
 		std::vector<std::string> NodeIdToGraph(int nodeId);

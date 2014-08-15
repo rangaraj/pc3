@@ -512,7 +512,7 @@ GraphT MdcGraph::ReadGraphEdgeList(const char *edgeFileName, const char *edgeTyp
 
 }
 
-
+/******************* Unnecessary
 GraphT MdcGraph::ReadGraphEdgeList(std::string edgeFileName, std::string edgeType, std::string graphName, std::vector<Node_infoT> vertexList)
 {
 	std::cout << "Reading Graph Edges for <std:;string>EdgeFileName|EdgeType|GraphName: " << edgeFileName << "|" << edgeType << "|" << graphName << std::endl;
@@ -523,19 +523,19 @@ GraphT MdcGraph::ReadGraphEdgeList(std::string edgeFileName, std::string edgeTyp
 
 	std::ifstream edgeFile(edgeFileName.c_str());
 
-	/* The first few lines will be:
-		NAME MDC SIMULATION - SHANTYTOWN NODELIST INPUT
-		COMMENT Sensor Node Relative Placement provided by IIST
-		DIMENSION 12315
-		DEPOT	T	24
-		DEPOT	H	24
-		EDGE_LIST_SECTION
-		24    22    H    86.9941483975268
-		22    231    H    58.5001204787593
-		11864    11865    T    11.6996078566915
-		11865    11866    T    6.54295068641896
-		11866    11868    T    32.0056339697657
-	 */
+	// The first few lines will be:
+	//	NAME MDC SIMULATION - SHANTYTOWN NODELIST INPUT
+	//	COMMENT Sensor Node Relative Placement provided by IIST
+	//	DIMENSION 12315
+	//	DEPOT	T	24
+	//	DEPOT	H	24
+	//	EDGE_LIST_SECTION
+	//	24    22    H    86.9941483975268
+	//	22    231    H    58.5001204787593
+	//	11864    11865    T    11.6996078566915
+	//	11865    11866    T    6.54295068641896
+	//	11866    11868    T    32.0056339697657
+	//
 	while (!edgeFile.eof())
 	{
 		getline(edgeFile,s);
@@ -647,7 +647,7 @@ GraphT MdcGraph::ReadGraphEdgeList(std::string edgeFileName, std::string edgeTyp
 	return g;
 
 }
-
+********************************************************************/
 
 void MdcGraph::printTheGraph(GraphT g, const char *graphFileName)
 {

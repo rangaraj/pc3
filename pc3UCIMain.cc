@@ -202,8 +202,63 @@ MdcMain::Run()
 
     SetupEventList();
 	SetupMobility();
+	// Now call this method in mdc-utilities that will populate all the Waypoint vectors corresponding to the event locations
+	ComputeAllGraphWayPoints();
 
-	// Skipping Actual Simulation...
+
+	std::string H_MDCs[] = { "H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10" };
+	std::string T_MDCs[] = { "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10" };
+	for (uint32_t i=0; i<m_nH_Mdcs; i++)
+	{
+		mdcGraph->PrintWaypointVector(H_MDCs[i], m_allEvents.size());
+	}
+	for (uint32_t i=0; i<m_nT_Mdcs; i++)
+	{
+		mdcGraph->PrintWaypointVector(T_MDCs[i], m_allEvents.size());
+	}
+	std::string graphFileName;
+	for (uint32_t i=0; i<m_nH_Mdcs; i++)
+	{
+		graphFileName = H_MDCs[i];
+		graphFileName.append("-WayPoints.dot");
+		mdcGraph->PrintGraphRoute(H_MDCs[i], graphFileName.c_str());
+	}
+	for (uint32_t i=0; i<m_nT_Mdcs; i++)
+	{
+		graphFileName = T_MDCs[i];
+		graphFileName.append("-WayPoints.dot");
+		mdcGraph->PrintGraphRoute(T_MDCs[i], graphFileName.c_str());
+	}
+
+
+
+	 /* Print all the routes one-by-one
+	if (m_nH_Mdcs>0) mdcGraph->PrintWaypointVector("H1", m_allEvents.size());
+	if (m_nH_Mdcs>1) mdcGraph->PrintWaypointVector("H2", m_allEvents.size());
+	if (m_nH_Mdcs>2) mdcGraph->PrintWaypointVector("H3", m_allEvents.size());
+	if (m_nH_Mdcs>3) mdcGraph->PrintWaypointVector("H4", m_allEvents.size());
+	if (m_nH_Mdcs>4) mdcGraph->PrintWaypointVector("H5", m_allEvents.size());
+	if (m_nH_Mdcs>5) mdcGraph->PrintWaypointVector("H6", m_allEvents.size());
+	if (m_nH_Mdcs>6) mdcGraph->PrintWaypointVector("H7", m_allEvents.size());
+	if (m_nH_Mdcs>7) mdcGraph->PrintWaypointVector("H8", m_allEvents.size());
+	if (m_nH_Mdcs>8) mdcGraph->PrintWaypointVector("H9", m_allEvents.size());
+	if (m_nH_Mdcs>9) mdcGraph->PrintWaypointVector("H10", m_allEvents.size());
+	if (m_nT_Mdcs>0) mdcGraph->PrintWaypointVector("T1", m_allEvents.size());
+	if (m_nT_Mdcs>1) mdcGraph->PrintWaypointVector("T2", m_allEvents.size());
+	if (m_nT_Mdcs>2) mdcGraph->PrintWaypointVector("T3", m_allEvents.size());
+	if (m_nT_Mdcs>3) mdcGraph->PrintWaypointVector("T4", m_allEvents.size());
+	if (m_nT_Mdcs>4) mdcGraph->PrintWaypointVector("T5", m_allEvents.size());
+	if (m_nT_Mdcs>5) mdcGraph->PrintWaypointVector("T6", m_allEvents.size());
+	if (m_nT_Mdcs>6) mdcGraph->PrintWaypointVector("T7", m_allEvents.size());
+	if (m_nT_Mdcs>7) mdcGraph->PrintWaypointVector("T8", m_allEvents.size());
+	if (m_nT_Mdcs>8) mdcGraph->PrintWaypointVector("T9", m_allEvents.size());
+	if (m_nT_Mdcs>9) mdcGraph->PrintWaypointVector("T10", m_allEvents.size());
+	 */
+
+	//	const char* traceFile = "mdcNS2TraceFile.txt";
+	//	CreateNS2TraceFromWaypointVector(0, "H1", traceFile, std::ofstream::out);
+	//	CreateNS2TraceFromWaypointVector(1, "T1", traceFile, std::ofstream::out);
+	//	At the end of this, all the graphs will have their Waypoint vectors set and we can technically generate a static mobility model.
 	return;
 
 }
@@ -305,49 +360,32 @@ MdcMain::SetupMobility()
 		// We divide the whole road network into n sub-graphs and assume that the MDCs travel only within that region.
 
 		GraphT hGraph, tGraph;
+		const char* edgeFileName =
+				"IIST0520EdgesHT.txt";
+				//"IIST0711Edges.txt";
 
 		/****** TODO ********************* This somehow does not work!
 		std::string H_MDCs[] = { "H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10" };
 		std::string T_MDCs[] = { "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10" };
 		for (uint32_t i=0; i<m_nH_Mdcs; i++)
 		{
-			const char *mdcName = H_MDCs[i].c_str();
-			hGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "H", mdcName, m_nodeLocations);
-			AddGraph(mdcName, hGraph);
+			//const char *mdcName = H_MDCs[i].c_str();
+			hGraph = mdcGraph->ReadGraphEdgeList(edgeFileName, "H", H_MDCs[i].c_str(), m_nodeLocations);
+			mdcGraph->AddGraph(H_MDCs[i].c_str(), hGraph);
 		}
-		printTheGraph(hGraph, "HGraph.dot");
+		mdcGraph->printTheGraph(hGraph, "HGraph.dot");
 		for (uint32_t i=0; i<m_nT_Mdcs; i++)
 		{
-			const char *mdcName = T_MDCs[i].c_str();
-			hGraph = ReadGraphEdgeList("IIST0520EdgesHT.txt", "T", mdcName, m_nodeLocations);
-			AddGraph(mdcName, tGraph);
+			//const char *mdcName = T_MDCs[i].c_str();
+			hGraph = mdcGraph->ReadGraphEdgeList(edgeFileName, "T", T_MDCs[i].c_str(), m_nodeLocations);
+			mdcGraph->AddGraph(T_MDCs[i].c_str(), tGraph);
 		}
-		printTheGraph(tGraph, "TGraph.dot");
-		ComputeAllGraphWayPoints();
-		for (uint32_t i=0; i<m_nH_Mdcs; i++)
-		{
-			PrintWaypointVector(H_MDCs[i]);
-		}
-		for (uint32_t i=0; i<m_nT_Mdcs; i++)
-		{
-			PrintWaypointVector(T_MDCs[i]);
-		}
-		for (uint32_t i=0; i<m_nH_Mdcs; i++)
-		{
-			PrintGraphRoute(H_MDCs[i], H_MDCs[i].append("-WayPoints.dot").c_str());
-		}
-		for (uint32_t i=0; i<m_nT_Mdcs; i++)
-		{
-			PrintGraphRoute(T_MDCs[i], T_MDCs[i].append("-WayPoints.dot").c_str());
-		}
+		mdcGraph->printTheGraph(tGraph, "TGraph.dot");
 		*****************************************/
 
 
 		///******* TODO...
 		// Hate this stupid if condition logic but somehow the previous block fails in ComputeAllGraphWayPoints(); -- giving up!
-		const char* edgeFileName =
-				//"IIST0520EdgesHT.txt";
-				"IIST0711Edges.txt";
 		if (m_nH_Mdcs>0)
 		{
 			hGraph = mdcGraph->ReadGraphEdgeList(edgeFileName, "H", "H1", m_nodeLocations);
@@ -455,39 +493,9 @@ MdcMain::SetupMobility()
 		}
 		mdcGraph->printTheGraph(tGraph, "TGraph.dot");
 
+		//*******************************/
 
-		// Now call this method in mdc-utilities that will populate all the Waypoint vectors corresponding to the event locations
-		ComputeAllGraphWayPoints();
 
-		if (m_nH_Mdcs>0) mdcGraph->PrintWaypointVector("H1", m_allEvents.size());
-		if (m_nH_Mdcs>1) mdcGraph->PrintWaypointVector("H2", m_allEvents.size());
-		if (m_nH_Mdcs>2) mdcGraph->PrintWaypointVector("H3", m_allEvents.size());
-		if (m_nH_Mdcs>3) mdcGraph->PrintWaypointVector("H4", m_allEvents.size());
-		if (m_nH_Mdcs>4) mdcGraph->PrintWaypointVector("H5", m_allEvents.size());
-		if (m_nH_Mdcs>5) mdcGraph->PrintWaypointVector("H6", m_allEvents.size());
-		if (m_nH_Mdcs>6) mdcGraph->PrintWaypointVector("H7", m_allEvents.size());
-		if (m_nH_Mdcs>7) mdcGraph->PrintWaypointVector("H8", m_allEvents.size());
-		if (m_nH_Mdcs>8) mdcGraph->PrintWaypointVector("H9", m_allEvents.size());
-		if (m_nH_Mdcs>9) mdcGraph->PrintWaypointVector("H10", m_allEvents.size());
-		if (m_nT_Mdcs>0) mdcGraph->PrintWaypointVector("T1", m_allEvents.size());
-		if (m_nT_Mdcs>1) mdcGraph->PrintWaypointVector("T2", m_allEvents.size());
-		if (m_nT_Mdcs>2) mdcGraph->PrintWaypointVector("T3", m_allEvents.size());
-		if (m_nT_Mdcs>3) mdcGraph->PrintWaypointVector("T4", m_allEvents.size());
-		if (m_nT_Mdcs>4) mdcGraph->PrintWaypointVector("T5", m_allEvents.size());
-		if (m_nT_Mdcs>5) mdcGraph->PrintWaypointVector("T6", m_allEvents.size());
-		if (m_nT_Mdcs>6) mdcGraph->PrintWaypointVector("T7", m_allEvents.size());
-		if (m_nT_Mdcs>7) mdcGraph->PrintWaypointVector("T8", m_allEvents.size());
-		if (m_nT_Mdcs>8) mdcGraph->PrintWaypointVector("T9", m_allEvents.size());
-		if (m_nT_Mdcs>9) mdcGraph->PrintWaypointVector("T10", m_allEvents.size());
-		//*********************/
-
-		//PrintGraphRoute("H1", "H1-WayPoints.dot");
-		//PrintGraphRoute("T1", "T1-WayPoints.dot");
-
-//		const char* traceFile = "mdcNS2TraceFile.txt";
-//		CreateNS2TraceFromWaypointVector(0, "H1", traceFile, std::ofstream::out);
-//		CreateNS2TraceFromWaypointVector(1, "T1", traceFile, std::ofstream::out);
-		// At the end of this, all the graphs will have their Waypoint vectors set and we can technically generate a static mobility model.
 
 	} else if (m_mdcTrajectory == 6) // UNUSED... The mobility model Dynamic Change uses the graph network
 	{
